@@ -1,0 +1,30 @@
+{
+  "name": "iris-bank",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && nodemon server.js",
+    "frontend": "cd frontend && npm start",
+    "frontend:dev": "cd frontend && nodemon server.js",
+    "dev:all": "concurrently \"cd backend && nodemon server.js\" \"cd frontend && nodemon server.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.20.0",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.14"
+  }
+}
