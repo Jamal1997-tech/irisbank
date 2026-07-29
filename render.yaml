@@ -3,9 +3,8 @@ services:
     name: iris-bank
     env: node
     plan: free
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd backend && npm install
+    startCommand: node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production
