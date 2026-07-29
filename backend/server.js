@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const dotenv = require('dotenv');
 const { connectDB } = require('./config/database');
 const securityMiddleware = require('./middlewares/security');
@@ -37,8 +38,15 @@ app.use(securityMiddleware.csrfProtection);
 app.use(securityMiddleware.requestLogger);
 
 // Middlewares globaux
+const allowedOrigins = [
+  'http://localhost:3000', 'http://localhost:3001',
+  'http://127.0.0.1:3000', 'http://127.0.0.1:3001'
+];
+if (process.env.RENDER_EXTERNAL_URL) allowedOrigins.push(process.env.RENDER_EXTERNAL_URL);
+if (process.env.PUBLIC_URL) allowedOrigins.push(process.env.PUBLIC_URL);
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001'],
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
   allowedHeaders: [
@@ -90,17 +98,24 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/support', supportRoutes);
 
-// Route de base
-app.get('/', (req, res) => {
+// Route de base de l'API (utile pour vérifier que le backend répond)
+app.get('/api', (req, res) => {
   res.json({ message: 'Bienvenue sur l\'API IRIS Bank' });
 });
+
+// Sert le frontend statique (build unique : un seul service, une seule URL publique)
+const frontendPath = path.join(__dirname, '..', 'frontend', 'public');
+app.use(express.static(frontendPath));
 
 // Gestion des erreurs sécurisée
 app.use(securityMiddleware.errorLogger);
 
-// Route 404 pour les routes non trouvées
+// Routes API non trouvées -> JSON, le reste -> page d'erreur front
 app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route non trouvée' });
+  if (req.originalUrl.startsWith('/api/')) {
+    return res.status(404).json({ message: 'Route non trouvée' });
+  }
+  res.status(404).sendFile(path.join(frontendPath, 'error.html'));
 });
 
 const PORT = process.env.PORT || 3000;

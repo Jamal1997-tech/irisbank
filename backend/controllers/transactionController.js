@@ -62,7 +62,7 @@ const deposit = async (req, res) => {
 
     const transaction = {
       id: transactions.length + 1,
-      compte_destinataire_id: compte_id,
+      compte_destinataire_id: parseInt(compte_id),
       type_transaction: 'depot',
       montant: parseFloat(montant),
       description: 'Dépôt',
@@ -96,7 +96,7 @@ const withdraw = async (req, res) => {
 
     const transaction = {
       id: transactions.length + 1,
-      compte_expediteur_id: compte_id,
+      compte_expediteur_id: parseInt(compte_id),
       type_transaction: 'retrait',
       montant: parseFloat(montant),
       description: 'Retrait',
@@ -129,8 +129,8 @@ const transfer = async (req, res) => {
 
     const transaction = {
       id: transactions.length + 1,
-      compte_expediteur_id: expediteur_id,
-      compte_destinataire_id: destinataire_id,
+      compte_expediteur_id: parseInt(expediteur_id),
+      compte_destinataire_id: parseInt(destinataire_id),
       type_transaction: 'virement',
       montant: parseFloat(montant),
       description: 'Virement',
@@ -163,7 +163,7 @@ const transferByIBAN = async (req, res) => {
 
     const transaction = {
       id: transactions.length + 1,
-      compte_expediteur_id: expediteur_id,
+      compte_expediteur_id: parseInt(expediteur_id),
       compte_destinataire_id: receiver.id,
       type_transaction: 'virement',
       montant: parseFloat(montant),

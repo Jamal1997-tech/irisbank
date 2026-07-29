@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:3000/api';
+// En local avec le frontend servi séparément (port 3001), on cible le backend sur 3000.
+// Sinon (backend qui sert aussi le frontend, ou déploiement), on reste en relatif.
+const API_BASE = window.location.port === '3001' ? 'http://localhost:3000/api' : '/api';
 let user = null;
 let accounts = [];
 
@@ -480,7 +482,7 @@ async function loadMonthlySpending() {
     if (response.ok) {
       const transactions = await response.json();
       const monthlyTransactions = transactions.filter(t => {
-        const transactionDate = new Date(t.date);
+        const transactionDate = new Date(t.date_transaction);
         return transactionDate.getMonth() + 1 === currentMonth &&
                transactionDate.getFullYear() === currentYear &&
                (t.type_transaction === 'retrait' || t.type_transaction === 'virement');
@@ -585,7 +587,7 @@ function loadRecentTransactions(transactions) {
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h6 class="mb-1">${transaction.type_transaction.charAt(0).toUpperCase() + transaction.type_transaction.slice(1)}</h6>
-              <small class="text-muted">${new Date(transaction.date).toLocaleDateString('fr-FR')}</small>
+              <small class="text-muted">${new Date(transaction.date_transaction).toLocaleDateString('fr-FR')}</small>
             </div>
             <div class="text-end">
               <span class="fw-bold ${amountClass}">${transaction.montant} €</span>

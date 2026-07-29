@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:3000/api';
+// En local avec le frontend servi séparément (port 3001), on cible le backend sur 3000.
+// Sinon (backend qui sert aussi le frontend, ou déploiement), on reste en relatif.
+const API_BASE = window.location.port === '3001' ? 'http://localhost:3000/api' : '/api';
 
 // Fonction pour récupérer un token CSRF
 async function getCsrfToken() {
